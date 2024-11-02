@@ -1,9 +1,3 @@
----
-title: "README"
-format:
-  md:
-    output-file: README.md
----
 
 # Введение в R
 
