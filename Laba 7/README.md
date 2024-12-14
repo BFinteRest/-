@@ -1,57 +1,50 @@
-# Анализ данных сетевого трафика с использованием аналитической
-in-memory СУБД DuckDB
-m1hailova.vladlena@yandex.ru
 
-# Практика в DuckDB
-
+# Практика библиотеки arrow
 ## m1hailova.vladlena@yandex.ru
 
-# Анализ данных сетевого трафика с использованием аналитической in-memory СУБД DuckDB
+# Анализ данных сетевого трафика при помощи библиотеки Arrow
 
 ## Цель работы
 
-1.  Изучить возможности СУБД DuckDB для обработки и анализ больших
-    данных
-2.  Получить навыки применения DuckDB совместно с языком
-    программирования R
+1.  Изучить возможности технологии Apache Arrow для обработки и анализ
+    больших данных
+2.  Получить навыки применения Arrow совместно с языком программирования
+    R
 3.  Получить навыки анализа метаинфомации о сетевом трафике
 4.  Получить навыки применения облачных технологий хранения, подготовки
     и анализа данных: Yandex Object Storage, Rstudio Server.
 
 ## Исходные данные
 
-1.  Программное обеспечение Windows 10
-2.  Данные tm_data.pqt
-3.  Библиотека DuckDB
-4.  Библиотека dplyr
-5.  Rstudio Server
+1.  Программное обеспечение MacOS 14.4.1 Sonoma
+2.  Yandex Object Storage
+3.  Библиотека Apache Arrow
+4.  Rstudio Desktop
 
 ## План
 
-1.  Импортировать данные с помощью функции download.file
-2.  Занести данные в таблицу DuckDB
-3.  Выполнить задания
+1.  Импортировать данные с помощью функции open_dataset
+2.  Выполнить задания
 
 ## Шаги
 
-1.  Скачиваем данные с поомщью функции download.file
+1.  Импортируем данные с помощью библиотеки arrow
 
 ``` r
-#options(timeout = 1000000)
-#download.file("https://storage.yandexcloud.net/arrow-datasets/tm_data.pqt",destfile = "tm_data.pqt")
+library(arrow)
 ```
 
-1.  Загружаем данные пакета в таблицу tbl
 
-``` r
-library(duckdb)
-```
+    Attaching package: 'arrow'
 
-    Loading required package: DBI
+    The following object is masked from 'package:utils':
+
+        timestamp
 
 ``` r
 library(dplyr)
 ```
+
 
     Attaching package: 'dplyr'
 
@@ -64,11 +57,48 @@ library(dplyr)
         intersect, setdiff, setequal, union
 
 ``` r
-con <- dbConnect(duckdb())
-dbExecute(con,"CREATE TABLE tbl as SELECT * FROM read_parquet('tm_data.pqt')")
+library(tidyverse)
 ```
 
-    [1] 105747730
+    ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ✔ forcats   1.0.0     ✔ readr     2.1.5
+    ✔ ggplot2   3.5.1     ✔ stringr   1.5.1
+    ✔ lubridate 1.9.3     ✔ tibble    3.2.1
+    ✔ purrr     1.0.2     ✔ tidyr     1.3.1
+
+    ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ✖ lubridate::duration() masks arrow::duration()
+    ✖ dplyr::filter()       masks stats::filter()
+    ✖ dplyr::lag()          masks stats::lag()
+    ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
+#download.file("https://storage.yandexcloud.net/arrow-datasets/tm_data.pqt",destfile = "tm_data.pqt")
+df <- arrow::open_dataset(sources = "tm_data.pqt", format = "parquet")
+glimpse(df)
+```
+
+    FileSystemDataset with 1 Parquet file
+    105,747,730 rows x 5 columns
+    $ timestamp <double> 1.578326e+12, 1.578326e+12, 1.578326e+12, 1.578326e+12, 1.5…
+    $ src       <string> "13.43.52.51", "16.79.101.100", "18.43.118.103", "15.71.108…
+    $ dst       <string> "18.70.112.62", "12.48.65.39", "14.51.30.86", "14.50.119.33…
+    $ port       <int32> 40, 92, 27, 57, 115, 92, 65, 123, 79, 72, 123, 123, 22, 118…
+    $ bytes      <int32> 57354, 11895, 898, 7496, 20979, 8620, 46033, 1500, 979, 103…
+    Call `print()` for full schema details
+
+``` r
+glimpse(df)
+```
+
+    FileSystemDataset with 1 Parquet file
+    105,747,730 rows x 5 columns
+    $ timestamp <double> 1.578326e+12, 1.578326e+12, 1.578326e+12, 1.578326e+12, 1.5…
+    $ src       <string> "13.43.52.51", "16.79.101.100", "18.43.118.103", "15.71.108…
+    $ dst       <string> "18.70.112.62", "12.48.65.39", "14.51.30.86", "14.50.119.33…
+    $ port       <int32> 40, 92, 27, 57, 115, 92, 65, 123, 79, 72, 123, 123, 22, 118…
+    $ bytes      <int32> 57354, 11895, 898, 7496, 20979, 8620, 46033, 1500, 979, 103…
+    Call `print()` for full schema details
 
 1.  Приступаем к выполнению заданий
 
@@ -77,295 +107,158 @@ dbExecute(con,"CREATE TABLE tbl as SELECT * FROM read_parquet('tm_data.pqt')")
 1.  Найдите утечку данных из вашей сети
 
 ``` r
-dbGetQuery(con,"SELECT src FROM tbl
-WHERE (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%') 
-AND NOT (dst LIKE '12.%' AND dst LIKE '13.%' AND dst LIKE '14.%')
-GROUP BY src
-order by sum(bytes) desc
-limit 1") %>% knitr::kable()
+task1 <- df %>% filter(str_detect(src, "^12.") | str_detect(src, "^13.") | str_detect(src, "^14."))  %>% filter(!str_detect(dst, "^12.") & !str_detect(dst, "^13.") & !str_detect(dst, "^14."))  %>% group_by(src) %>% summarise("sum" = sum(bytes)) %>% arrange(desc(sum)) %>% head(1) %>% select(src) 
+task1 %>% collect() %>% knitr::kable()
 ```
 
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">
-src
-</th>
+<th style="text-align: left;">src</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">
-13.37.84.125
-</td>
+<td style="text-align: left;">13.37.84.125</td>
 </tr>
 </tbody>
 </table>
 
 1.  Найдите утечку данных 2
 
+Для начала нужно определить рабочее время. Для этого можно использовать
+нагрузку на трафик, и выцепить час с сортировкой по количеству трафика.
+
 ``` r
-dbGetQuery(con,"SELECT 
-    time,
-    COUNT(*) AS trafictime
-FROM (
-    SELECT 
-        timestamp,
-        src,
-        dst,
-        bytes,
-        (
-            (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%')
-            AND (dst NOT LIKE '12.%' AND dst NOT LIKE '13.%' AND dst NOT LIKE '14.%')
-        ) AS trafic,
-        EXTRACT(HOUR FROM epoch_ms(CAST(timestamp AS BIGINT))) AS time
-    FROM tbl
-) sub
-WHERE trafic = TRUE AND time BETWEEN 0 AND 24
-GROUP BY time
-ORDER BY trafictime DESC;") %>% knitr::kable()
+task21 <- df %>% select(timestamp, src, dst, bytes) %>% mutate(trafic = (str_detect(src, "^((12|13|14)\\.)") & !str_detect(dst, "^((12|13|14)\\.)")),time = hour(as_datetime(timestamp/1000))) %>% filter(trafic == TRUE, time >= 0 & time <= 24) %>% group_by(time) %>%
+summarise(trafictime = n()) %>% arrange(desc(trafictime))
+task21 %>% collect() %>% knitr::kable()
 ```
 
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: right;">
-time
-</th>
-<th style="text-align: right;">
-trafictime
-</th>
+<th style="text-align: right;">time</th>
+<th style="text-align: right;">trafictime</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">
-16
-</td>
-<td style="text-align: right;">
-4490576
-</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4490576</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-22
-</td>
-<td style="text-align: right;">
-4489703
-</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">4489703</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-18
-</td>
-<td style="text-align: right;">
-4489386
-</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">4489386</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-23
-</td>
-<td style="text-align: right;">
-4488093
-</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">4488093</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-19
-</td>
-<td style="text-align: right;">
-4487345
-</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">4487345</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-21
-</td>
-<td style="text-align: right;">
-4487109
-</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">4487109</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-17
-</td>
-<td style="text-align: right;">
-4483578
-</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">4483578</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-20
-</td>
-<td style="text-align: right;">
-4482712
-</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">4482712</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-13
-</td>
-<td style="text-align: right;">
-169617
-</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">169617</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-7
-</td>
-<td style="text-align: right;">
-169241
-</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">169241</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-0
-</td>
-<td style="text-align: right;">
-169068
-</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">169068</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-3
-</td>
-<td style="text-align: right;">
-169050
-</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">169050</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-14
-</td>
-<td style="text-align: right;">
-169028
-</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">169028</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-6
-</td>
-<td style="text-align: right;">
-169015
-</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">169015</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-12
-</td>
-<td style="text-align: right;">
-168892
-</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">168892</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-10
-</td>
-<td style="text-align: right;">
-168750
-</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">168750</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-2
-</td>
-<td style="text-align: right;">
-168711
-</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">168711</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-11
-</td>
-<td style="text-align: right;">
-168684
-</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">168684</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-1
-</td>
-<td style="text-align: right;">
-168539
-</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">168539</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-4
-</td>
-<td style="text-align: right;">
-168422
-</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">168422</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-15
-</td>
-<td style="text-align: right;">
-168355
-</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">168355</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-5
-</td>
-<td style="text-align: right;">
-168283
-</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">168283</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-9
-</td>
-<td style="text-align: right;">
-168283
-</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">168283</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-8
-</td>
-<td style="text-align: right;">
-168205
-</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">168205</td>
 </tr>
 </tbody>
 </table>
 
+По данным выясняем, что рабочим временем является 16-23.
+
 ``` r
-dbGetQuery(con,"
-SELECT src
-FROM (
-    SELECT src, SUM(bytes) AS total_bytes
-    FROM (
-        SELECT *,
-            EXTRACT(HOUR FROM epoch_ms(CAST(timestamp AS BIGINT))) AS time
-        FROM tbl
-    ) sub
-    WHERE src <> '13.37.84.125'
-        AND (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%')
-        AND (dst NOT LIKE '12.%' AND dst NOT LIKE '13.%' AND dst NOT LIKE '14.%')
-        AND time BETWEEN 1 AND 15
-    GROUP BY src
-) grp
-ORDER BY total_bytes DESC
-LIMIT 1;") %>% knitr::kable()
+task22 <- df %>% mutate(time = hour(as_datetime(timestamp/1000))) %>% 
+filter(!str_detect(src, "^13.37.84.125")) %>%  filter(str_detect(src, "^12.") | str_detect(src, "^13.") | str_detect(src, "^14."))  %>% filter(!str_detect(dst, "^12.") | !str_detect(dst, "^13.") | !str_detect(dst, "^14."))  %>% filter(time >= 1 & time <= 15) %>%  group_by(src) %>% summarise("sum" = sum(bytes)) %>% arrange(desc(sum)) %>% head(1) %>% select(src) 
+task22 %>% collect() %>% knitr::kable()
 ```
 
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">
-src
-</th>
+<th style="text-align: left;">src</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">
-12.55.77.96
-</td>
+<td style="text-align: left;">12.55.77.96</td>
 </tr>
 </tbody>
 </table>
@@ -373,92 +266,48 @@ src
 1.  Найдите утечку данных 3
 
 ``` r
-dbExecute(con,"CREATE TEMPORARY TABLE task31 AS
-SELECT src, bytes, port
-FROM tbl
-WHERE src <> '13.37.84.125'
-    AND src <> '12.55.77.96'
-    AND (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%')
-    AND (dst NOT LIKE '12.%' AND dst NOT LIKE '13.%' AND dst NOT LIKE '14.%');")
-```
+task31 <- df %>% filter(!str_detect(src, "^13.37.84.125")) %>% filter(!str_detect(src, "^12.55.77.96")) %>% filter(str_detect(src, "^12.") | str_detect(src, "^13.") | str_detect(src, "^14."))  %>% filter(!str_detect(dst, "^12.") & !str_detect(dst, "^13.") & !str_detect(dst, "^14."))  %>% select(src, bytes, port) 
 
-    [1] 38498353
 
-``` r
-dbGetQuery(con,"SELECT port, AVG(bytes) AS mean_bytes, MAX(bytes) AS max_bytes, SUM(bytes) AS sum_bytes, MAX(bytes) - AVG(bytes) AS Raz
-FROM task31
-GROUP BY port
-HAVING MAX(bytes) - AVG(bytes) != 0
-ORDER BY Raz DESC
-LIMIT 1;") %>% knitr::kable()
+task31 %>%  group_by(port) %>% summarise("mean"=mean(bytes), "max"=max(bytes), "sum" = sum(bytes)) %>% 
+  mutate("Raz"= max-mean)  %>% filter(Raz!=0) %>% arrange(desc(Raz)) %>% head(1) %>% collect() %>% knitr::kable()
 ```
 
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: right;">
-port
-</th>
-<th style="text-align: right;">
-mean_bytes
-</th>
-<th style="text-align: right;">
-max_bytes
-</th>
-<th style="text-align: right;">
-sum_bytes
-</th>
-<th style="text-align: right;">
-Raz
-</th>
+<th style="text-align: right;">port</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">sum</th>
+<th style="text-align: right;">Raz</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">
-37
-</td>
-<td style="text-align: right;">
-35089.99
-</td>
-<td style="text-align: right;">
-209402
-</td>
-<td style="text-align: right;">
-32136394510
-</td>
-<td style="text-align: right;">
-174312
-</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">35089.99</td>
+<td style="text-align: right;">209402</td>
+<td style="text-align: right;">32136394510</td>
+<td style="text-align: right;">174312</td>
 </tr>
 </tbody>
 </table>
 
 ``` r
-dbGetQuery(con,"SELECT src
-FROM (
-    SELECT src, AVG(bytes) AS mean_bytes
-    FROM task31
-    WHERE port = 37
-    GROUP BY src
-) AS task32
-ORDER BY mean_bytes DESC
-LIMIT 1;") %>% knitr::kable()
+task32 <- task31  %>% filter(port==37) %>% group_by(src) %>% summarise("mean"=mean(bytes)) %>% arrange(desc(mean)) %>% head(1) %>% select(src)
+task32 %>% collect() %>% knitr::kable()
 ```
 
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">
-src
-</th>
+<th style="text-align: left;">src</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">
-14.31.107.42
-</td>
+<td style="text-align: left;">14.31.107.42</td>
 </tr>
 </tbody>
 </table>
@@ -470,4 +319,6 @@ src
 
 ## Вывод
 
-Мы познакомились с DuckDB и применили его для анализа сетевого трафика.
+Мы ознакомились с применением облачных технологий хранения, подготовки и
+анализа данных, а также проанализировали метаинформацию о сетевом
+трафике.
