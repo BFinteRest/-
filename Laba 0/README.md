@@ -10,7 +10,7 @@ m1hailova.vladlena@yandex.ru
 
 ## Исходные данные
 
-1.  Программное обеспечение MacOS 14.4.1 Sonoma
+1.  Программное обеспечение Windows 10
 2.  Rstudio Desktop
 3.  Интерпретатор языка R 4.4.1
 
