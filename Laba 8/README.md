@@ -1,10 +1,5 @@
-# Анализ данных сетевого трафика с использованием аналитической
-in-memory СУБД DuckDB
-m1hailova.vladlena@yandex.ru
-
 # Практика в DuckDB
-
-## m1hailova.vladlena@yandex.ru
+m1hailova.vladlena@yandex.ru
 
 # Анализ данных сетевого трафика с использованием аналитической in-memory СУБД DuckDB
 
@@ -20,7 +15,7 @@ m1hailova.vladlena@yandex.ru
 
 ## Исходные данные
 
-1.  Программное обеспечение Windows 10
+1.  Программное обеспечение MacOS 14.4.1 Sonoma
 2.  Данные tm_data.pqt
 3.  Библиотека DuckDB
 4.  Библиотека dplyr
@@ -52,6 +47,7 @@ library(duckdb)
 ``` r
 library(dplyr)
 ```
+
 
     Attaching package: 'dplyr'
 
@@ -88,16 +84,12 @@ limit 1") %>% knitr::kable()
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">
-src
-</th>
+<th style="text-align: left;">src</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">
-13.37.84.125
-</td>
+<td style="text-align: left;">13.37.84.125</td>
 </tr>
 </tbody>
 </table>
@@ -129,206 +121,106 @@ ORDER BY trafictime DESC;") %>% knitr::kable()
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: right;">
-time
-</th>
-<th style="text-align: right;">
-trafictime
-</th>
+<th style="text-align: right;">time</th>
+<th style="text-align: right;">trafictime</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">
-16
-</td>
-<td style="text-align: right;">
-4490576
-</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4490576</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-22
-</td>
-<td style="text-align: right;">
-4489703
-</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">4489703</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-18
-</td>
-<td style="text-align: right;">
-4489386
-</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">4489386</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-23
-</td>
-<td style="text-align: right;">
-4488093
-</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">4488093</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-19
-</td>
-<td style="text-align: right;">
-4487345
-</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">4487345</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-21
-</td>
-<td style="text-align: right;">
-4487109
-</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">4487109</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-17
-</td>
-<td style="text-align: right;">
-4483578
-</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">4483578</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-20
-</td>
-<td style="text-align: right;">
-4482712
-</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">4482712</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-13
-</td>
-<td style="text-align: right;">
-169617
-</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">169617</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-7
-</td>
-<td style="text-align: right;">
-169241
-</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">169241</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-0
-</td>
-<td style="text-align: right;">
-169068
-</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">169068</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-3
-</td>
-<td style="text-align: right;">
-169050
-</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">169050</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-14
-</td>
-<td style="text-align: right;">
-169028
-</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">169028</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-6
-</td>
-<td style="text-align: right;">
-169015
-</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">169015</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-12
-</td>
-<td style="text-align: right;">
-168892
-</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">168892</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-10
-</td>
-<td style="text-align: right;">
-168750
-</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">168750</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-2
-</td>
-<td style="text-align: right;">
-168711
-</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">168711</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-11
-</td>
-<td style="text-align: right;">
-168684
-</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">168684</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-1
-</td>
-<td style="text-align: right;">
-168539
-</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">168539</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-4
-</td>
-<td style="text-align: right;">
-168422
-</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">168422</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-15
-</td>
-<td style="text-align: right;">
-168355
-</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">168355</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-5
-</td>
-<td style="text-align: right;">
-168283
-</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">168283</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">
-9
-</td>
-<td style="text-align: right;">
-168283
-</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">168283</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">
-8
-</td>
-<td style="text-align: right;">
-168205
-</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">168205</td>
 </tr>
 </tbody>
 </table>
@@ -356,16 +248,12 @@ LIMIT 1;") %>% knitr::kable()
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">
-src
-</th>
+<th style="text-align: left;">src</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">
-12.55.77.96
-</td>
+<td style="text-align: left;">12.55.77.96</td>
 </tr>
 </tbody>
 </table>
@@ -396,40 +284,20 @@ LIMIT 1;") %>% knitr::kable()
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: right;">
-port
-</th>
-<th style="text-align: right;">
-mean_bytes
-</th>
-<th style="text-align: right;">
-max_bytes
-</th>
-<th style="text-align: right;">
-sum_bytes
-</th>
-<th style="text-align: right;">
-Raz
-</th>
+<th style="text-align: right;">port</th>
+<th style="text-align: right;">mean_bytes</th>
+<th style="text-align: right;">max_bytes</th>
+<th style="text-align: right;">sum_bytes</th>
+<th style="text-align: right;">Raz</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">
-37
-</td>
-<td style="text-align: right;">
-35089.99
-</td>
-<td style="text-align: right;">
-209402
-</td>
-<td style="text-align: right;">
-32136394510
-</td>
-<td style="text-align: right;">
-174312
-</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">35089.99</td>
+<td style="text-align: right;">209402</td>
+<td style="text-align: right;">32136394510</td>
+<td style="text-align: right;">174312</td>
 </tr>
 </tbody>
 </table>
@@ -449,16 +317,12 @@ LIMIT 1;") %>% knitr::kable()
 <table>
 <thead>
 <tr class="header">
-<th style="text-align: left;">
-src
-</th>
+<th style="text-align: left;">src</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">
-14.31.107.42
-</td>
+<td style="text-align: left;">14.31.107.42</td>
 </tr>
 </tbody>
 </table>
