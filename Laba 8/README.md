@@ -15,7 +15,7 @@ m1hailova.vladlena@yandex.ru
 
 ## Исходные данные
 
-1.  Программное обеспечение MacOS 14.4.1 Sonoma
+1.  Программное обеспечение Windows 10
 2.  Данные tm_data.pqt
 3.  Библиотека DuckDB
 4.  Библиотека dplyr
