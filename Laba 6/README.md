@@ -59,7 +59,7 @@ m1hailova.vladlena@yandex.ru
 
 ![](img/6.png)
 
-Ссылка на дашборд: https://datalens.yandex.cloud/3p61ehroylsoq
+Ссылка на дашборд: [Yandex DataLens Dashboard](https://datalens.yandex.cloud/3p61ehroylsoq)
 
 ## Оценка результата
 
