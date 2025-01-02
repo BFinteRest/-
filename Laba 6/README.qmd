@@ -51,7 +51,7 @@ c)  Построить график активности (линейная ди�
 
 ![](img/6.png)
 
-Ссылка на дашборд: https://datalens.yandex.cloud/3p61ehroylsoq
+Ссылка на дашборд: [Yandex DataLens Dashboard](https://datalens.yandex.cloud/3p61ehroylsoq)
 
 ## Оценка результата
 
